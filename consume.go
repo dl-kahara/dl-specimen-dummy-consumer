@@ -3,9 +3,10 @@ package main
 import (
 	"crypto/sha256"
 	"encoding/json"
-	"github.com/rs/zerolog/log"
 	"io"
 	"net/http"
+
+	"github.com/rs/zerolog/log"
 )
 
 func consume(config Config) {
@@ -41,6 +42,9 @@ func consume(config Config) {
 		}
 
 		log.Debug().Any("payload", payload).Msg("Payload parsed")
+
+		requests_consumed.WithLabelValues().Inc()
+		bytes_consumed.WithLabelValues().Add(float64(len(body)))
 
 		w.Header().Set("Content-Type", "application/octet-stream")
 		w.WriteHeader(201) // "Created"
